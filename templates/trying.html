@@ -1,0 +1,32 @@
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="author" content="colorlib.com">
+    <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='trying.css') }}" />
+  </head>
+  <body>
+    <ul>
+      <li><a href="#">About</a>
+      <li><a href="#">Contact</a>
+    </ul>
+    <div class="s01">
+      <form action="http://localhost:5000/" method="post">
+        <div class="inner-form" style="position: absolute;left:150px; top:60px;">
+          <div class="input-field first-wrap">
+            <input  name="search" placeholder="What are you looking for?" type="text"/>
+          </div>
+          <div class="input-field second-wrap">
+            <input  name="location" placeholder="Location" type="text"/>
+          </div>
+          <div class="input-field third-wrap">
+            <button class="btn-search" type="submit">Search</button>
+          </div>
+        </div>
+      </form>
+      <p class="searched_for" style="position: absolute;top:130px;font-weight: bold;"></p>
+    </div>
+  </body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+</html>
