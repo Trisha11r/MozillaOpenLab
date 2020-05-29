@@ -248,7 +248,7 @@ def label_encoder(data):
 	data.to_csv('dataset_final_3k.csv', index=False)
 
 
-data = pd.read_csv('final_dataset_result.csv')
+data = pd.read_csv('final_dataset.csv')
 
 loaded_models = {}
 classes = ['Labels', 'Donation_Related', 'Resource_Type']
@@ -438,7 +438,3 @@ def pagination():
 if __name__ == '__main__':
 	
 	app.run(debug=True, use_reloader=True)
-	
-	# data = pd.read_csv('final_dataset_result.csv')
-	# data = clean(data, 1)
-	# data.to_csv('final_dataset_result.csv', index=False)
