@@ -8,12 +8,14 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}" />
   </head>
   <body>
-  	<ul>
-  		<li><a href="#">About</a>
-  		<li><a href="#">Contact</a>
-  	</ul>
+    <nav role="navigation" aria-label="main menu">
+      <ul class="navbar">
+        <li><a href="static/about.html">About</a></li>
+        <li><a href="static/Contact.html">Contact</a></li>
+      </ul>
+    </nav>
     <div class="s01">
-      <form action="/" method="post">
+      <form action="/searched" method="post">
         <fieldset>
           <legend>Help For Everyone</legend>
         </fieldset>
