@@ -18,12 +18,12 @@ body {
   padding: 0;
   font-family: sans-serif;
   text-align: center;
-  position: relative;
+  /*position: relative;
   height: 100%;
   background: url("images/trying.jpg");
   background-size: cover;
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: center;*/
 }
 ul{
   position: absolute;
@@ -46,6 +46,57 @@ ul li a {
   color: #2626262;
   font-weight: bold;
 }
+.navbar {
+  display: flex;
+  flex-wrap: wrap;
+  width: max-content;
+  gap: 1rem;
+  border: 4px solid rebeccapurple;
+  margin: 4em 0;
+  padding: 0.25em 1em;
+}
+.navbar li {
+  display: block; 
+}
+.navbar a {
+  text-decoration: none;
+  color: black;
+}
+.navbar a:hover {
+  text-decoration: underline;
+  text-decoration-color: orange;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 6px;
+}
+
+.pagination {
+    position:absolute;
+    right:25%;
+    margin-left:-150px;
+    background-color: #525252;
+    background-size: cover;
+}
+
+.pagination a {
+  /*color: black;*/
+  color: white;
+  float: left;
+  padding: 8px 16px;
+  text-decoration: none;
+  transition: background-color .3s;
+}
+
+.pagination a.active {
+  background-color: dodgerblue;
+  color: white;
+}
+
+.pagination a:hover:not(.active) {
+  /*background-color: #ddd;*/
+  background-color: orange;
+}
+
+
 /*ul li.active a
 {
   background: #262626;
@@ -490,7 +541,7 @@ legend {
 }
 
 .s01 {
-  /*min-height: 500vh;*/
+  min-height: 240vh;
   display: -ms-flexbox;
   display: flex;
   -ms-flex-pack: center;
@@ -498,9 +549,17 @@ legend {
   -ms-flex-align: center;
       align-items: center;
   font-family: 'Poppins', sans-serif;
+  /*height: 100%;*/
   /*background: url("images/trying.jpg");
-  background-size: contain;
-  background-position: center center;*/
+  background-size: cover;
+  background-position: center;
+  padding: 15px;*/
+}
+
+.dataframe{
+  background: url("images/trying.jpg");
+  background-size: cover;
+  background-position: center;
   padding: 15px;
 }
 

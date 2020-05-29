@@ -6,14 +6,21 @@
 <meta content="colorlib.com" name="author"/>
 <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet"/>
 <link href="{{ url_for('static', filename='trying.css') }}" rel="stylesheet"/>
+<script type="text/javascript"> 
+      function redirectPage(id) { 
+          location.href = "/page?page=" + id;
+      } 
+    </script>
 </head>
 <body>
-<ul>
-<li><a href="#">About</a>
-<li><a href="#">Contact</a>
-</li></li></ul>
+<nav aria-label="main menu" role="navigation">
+<ul class="navbar">
+<li><a href="static/about.html">About</a></li>
+<li><a href="static/Contact.html">Contact</a></li>
+</ul>
+</nav>
 <div class="s01">
-<form action="http://localhost:5000/" method="post">
+<form action="/searched" method="post">
 <div class="inner-form" style="position: absolute;left:150px; top:60px;">
 <div class="input-field first-wrap">
 <input name="search" placeholder="What are you looking for?" type="text"/>
@@ -26,204 +33,234 @@
 </div>
 </div>
 </form>
-<p class="searched_for" style="position: absolute;top:130px;font-weight: bold;">You searched for: I do not want to donate clothes. Found 31 results.</p><table border="1" class="dataframe" style="position:absolute;top:180px;padding:35px;">
+<p class="searched_for" style="position: absolute;top:130px;font-weight: bold;">You searched for: I want to donate clothes. Found 429 results.</p><table border="0" class="dataframe" style="position:absolute;top:180px;padding-left:35px;padding-right:35px;">
 <thead>
 <tr style="text-align: right;">
 <th></th>
 <th>Time</th>
-<th>Actual_Tweet</th>
+<th>Tweet_cleaned</th>
+<th>URL</th>
 <th>Location</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th>0</th>
-<td>29-04-2020 18:38</td>
-<td>b'RT @LukeDimond: When you appreciate the dona...</td>
-<td>Unknown</td>
-</tr>
-<tr>
 <th>1</th>
-<td>29-04-2020 21:09</td>
-<td>b'Donation links go live at midnight at https:...</td>
-<td>Warsaw, IN</td>
+<td>29-04-2020 18:38</td>
+<td>When you appreciate the donation but the message makes you want to disappear</td>
+<td><a href="https://t.co/yjgAAB5YC0">https://t.co/yjgAAB5YC0</a></td>
+<td>Unknown</td>
 </tr>
 <tr>
 <th>2</th>
-<td>29-04-2020 21:38</td>
-<td>b"WIPA Atlanta is raising funds for frontline ...</td>
-<td>Unknown</td>
+<td>29-04-2020 21:09</td>
+<td>Donation links go live at midnight at Help us raise money for Feeding America with</td>
+<td><a href="https://t.co/gUYSqKqahB">https://t.co/gUYSqKqahB</a></td>
+<td>Warsaw, IN</td>
 </tr>
 <tr>
 <th>3</th>
-<td>29-04-2020 21:07</td>
-<td>b'RT @BabyBasicsUK: From our SHEFFIELD centre....</td>
-<td>Sheffield, England</td>
+<td>29-04-2020 21:38</td>
+<td>WIPA Atlanta is raising funds for frontline workers at Atlanta s The chapter is collecting</td>
+<td><a href="https://t.co/bcevkPBYlm">https://t.co/bcevkPBYlm</a></td>
+<td>Unknown</td>
 </tr>
 <tr>
 <th>4</th>
-<td>29-04-2020 19:01</td>
-<td>b'We hope you all have your dancing shoes on f...</td>
-<td>Harborne, Birmingham, UK</td>
+<td>29-04-2020 21:07</td>
+<td>From our SHEFFIELD centre Donations we are in need of this week and our donation points Please note if you are</td>
+<td>Not Available</td>
+<td>Sheffield, England</td>
 </tr>
 <tr>
 <th>5</th>
-<td>29-04-2020 19:09</td>
-<td>b'RT @RT_Newport: Here at round table we are g...</td>
-<td>South Wales &amp; South West</td>
+<td>29-04-2020 19:01</td>
+<td>We hope you all have your dancing shoes on for our #TwoPointSixChallenge! Remember all you need to do is</td>
+<td><a href="https://t.co/oSvFy1dbc0">https://t.co/oSvFy1dbc0</a></td>
+<td>Harborne, Birmingham, UK</td>
 </tr>
 <tr>
 <th>6</th>
-<td>29-04-2020 21:47</td>
-<td>b'Help us continue supporting survivors of sex...</td>
-<td>Texas, USA</td>
+<td>29-04-2020 19:09</td>
+<td>Here at round table we are going for charter and this requires funding But we would like to give something back for</td>
+<td>Not Available</td>
+<td>South Wales &amp; South West</td>
 </tr>
 <tr>
 <th>7</th>
-<td>29-04-2020 21:56</td>
-<td>b'@NCChamber @butterball We could never do thi...</td>
-<td>facebook.com/FoodBankCENC</td>
+<td>29-04-2020 21:47</td>
+<td>Help us continue supporting survivors of sexual assault in the workplace by donating to #NTxgivingTuesdayNow</td>
+<td><a href="https://t.co/9OkhsfiXbQ">https://t.co/9OkhsfiXbQ</a></td>
+<td>Texas, USA</td>
 </tr>
 <tr>
 <th>8</th>
-<td>29-04-2020 21:17</td>
-<td>b'@Starrubyx @TaxJustice_SA Please donate mone...</td>
-<td>Moremela(Hlabekisa)Graskop, South Africa</td>
+<td>29-04-2020 21:56</td>
+<td>NCChamber We could never do this important work alone See how a donation empowers our #COVID19</td>
+<td><a href="https://t.co/zmxXAfEWhL">https://t.co/zmxXAfEWhL</a></td>
+<td>facebook.com/FoodBankCENC</td>
 </tr>
 <tr>
 <th>9</th>
-<td>29-04-2020 18:11</td>
-<td>b'CHALLENGE 25 RETURNS! \xf0\x9f\xa7\xa1\xf0\x...</td>
-<td>Worldwide</td>
+<td>29-04-2020 21:17</td>
+<td>Starrubyx Please donate money for the lawyer am the treasure when u ready with your donation</td>
+<td><a href="https://t.co/zfxUXwmxyD">https://t.co/zfxUXwmxyD</a></td>
+<td>Moremela(Hlabekisa)Graskop, South Africa</td>
 </tr>
 <tr>
 <th>10</th>
-<td>29-04-2020 18:38</td>
-<td>b'RT @jwjnational: \xf0\x9f\x9a\xa8 NEW DONATI...</td>
-<td>Unknown</td>
+<td>29-04-2020 18:11</td>
+<td>CHALLENGE RETURNS Each time you make a donation to Animal Justice Project it will be MATCHED by a</td>
+<td><a href="https://t.co/rNeXbL0qVg">https://t.co/rNeXbL0qVg</a></td>
+<td>Worldwide</td>
 </tr>
 <tr>
 <th>11</th>
-<td>29-04-2020 18:46</td>
-<td>b'@Afrikan_Dream @CyrilRamaphosa @EFFSouthAfri...</td>
-<td>Durban, South Africa</td>
-</tr>
-<tr>
-<th>12</th>
-<td>29-04-2020 18:23</td>
-<td>b'RT @LisbethFarnum1: @john_sipher @AmyMcGrath...</td>
+<td>29-04-2020 18:38</td>
+<td>NEW DONATION Shout out to for their generous contribution to the #WorkerSolidarityFund! This will go</td>
+<td>Not Available</td>
 <td>Unknown</td>
 </tr>
 <tr>
+<th>12</th>
+<td>29-04-2020 18:46</td>
+<td>Afrikan Dream Also donation loan</td>
+<td>Not Available</td>
+<td>Durban, South Africa</td>
+</tr>
+<tr>
 <th>13</th>
-<td>29-04-2020 18:15</td>
-<td>b'@JeffreeStar I would accept that donation'</td>
+<td>29-04-2020 18:23</td>
+<td>Amen another donation</td>
+<td>Not Available</td>
 <td>Unknown</td>
 </tr>
 <tr>
 <th>14</th>
-<td>29-04-2020 18:21</td>
-<td>b'RT @Mhk__1: Donation or helping someone is g...</td>
+<td>29-04-2020 18:15</td>
+<td>JeffreeStar I would accept that donation</td>
+<td>Not Available</td>
 <td>Unknown</td>
 </tr>
 <tr>
 <th>15</th>
-<td>29-04-2020 18:27</td>
-<td>b'RT @muhammedhirsi: Help and donate for a wor...</td>
+<td>29-04-2020 18:21</td>
+<td>Donation or helping someone is good enough before taking selfies or taking pictures of them To whom you donating something</td>
+<td>Not Available</td>
 <td>Unknown</td>
 </tr>
 <tr>
 <th>16</th>
-<td>29-04-2020 18:35</td>
-<td>b'RT @suezUK: Our charity partner, @macmillanc...</td>
-<td>Northamptonshire</td>
-</tr>
-<tr>
-<th>17</th>
-<td>29-04-2020 18:59</td>
-<td>b'RT @StockportSWA: So grateful for the GENERO...</td>
-<td>Stockport, England</td>
-</tr>
-<tr>
-<th>18</th>
-<td>29-04-2020 20:26</td>
-<td>b'@MissBNasty FYI.. some times your local fire...</td>
-<td>Tacoma, WA</td>
-</tr>
-<tr>
-<th>19</th>
-<td>29-04-2020 18:10</td>
-<td>b'HELP US, HELP @MercyCR HELP THE COMMUNITY!\n...</td>
-<td>Cedar Rapids, IA</td>
-</tr>
-<tr>
-<th>20</th>
-<td>29-04-2020 18:56</td>
-<td>b'RT @au_amnesty: Rainbow Cards and Letters ar...</td>
+<td>29-04-2020 18:27</td>
+<td>Help and donate for a worthy cause This Eid many orphans will be missing out on celebrating it properly This</td>
+<td>Not Available</td>
 <td>Unknown</td>
 </tr>
 <tr>
+<th>17</th>
+<td>29-04-2020 18:35</td>
+<td>Our charity partner support has set up an emergency appeal to develop and adapt new services to reach</td>
+<td>Not Available</td>
+<td>Northamptonshire</td>
+</tr>
+<tr>
+<th>18</th>
+<td>29-04-2020 18:59</td>
+<td>So grateful for the GENEROUS donation of toiletries and food by The Hut Group to the Refuge We support the</td>
+<td>Not Available</td>
+<td>Stockport, England</td>
+</tr>
+<tr>
+<th>19</th>
+<td>29-04-2020 20:26</td>
+<td>MissBNasty FYI some times your local fire department for a small fee donation They will fill up pools with there hoes Much quicker</td>
+<td>Not Available</td>
+<td>Tacoma, WA</td>
+</tr>
+<tr>
+<th>20</th>
+<td>29-04-2020 18:10</td>
+<td>HELP US HELP HELP THE COMMUNITY WAY TO DONATE Click the donate button on Facebook Bring a</td>
+<td><a href="https://t.co/Jp29IY0Slz">https://t.co/Jp29IY0Slz</a></td>
+<td>Cedar Rapids, IA</td>
+</tr>
+<tr>
 <th>21</th>
-<td>22-04-2020 20:21</td>
-<td>b'Praying for Venice and for all of Italy \xf0...</td>
+<td>29-04-2020 18:56</td>
+<td>Rainbow Cards and Letters are seeking small donations to allow us to support #LGBTQIA people around the world Please</td>
+<td>Not Available</td>
 <td>Unknown</td>
 </tr>
 <tr>
 <th>22</th>
-<td>29-04-2020 18:50</td>
-<td>b'It only takes a few minutes to make a  donat...</td>
-<td>London, England</td>
+<td>22-04-2020 20:21</td>
+<td>Praying for Venice and for all of Italy Help us rais money for Italy at</td>
+<td><a href="https://t.co/37nqVNV8tF">https://t.co/37nqVNV8tF</a></td>
+<td>Unknown</td>
 </tr>
 <tr>
 <th>23</th>
-<td>29-04-2020 18:31</td>
-<td>b'RT @msmjetten: Help @Radboud_Uni and @radbou...</td>
-<td>Oirschot - Nijmegen</td>
+<td>29-04-2020 18:50</td>
+<td>It only takes a few minutes to make a donation Which is going towards Orphans and helping building towards a</td>
+<td><a href="https://t.co/0t2eobFuKH">https://t.co/0t2eobFuKH</a></td>
+<td>London, England</td>
 </tr>
 <tr>
 <th>24</th>
-<td>29-04-2020 19:02</td>
-<td>b'RT @the_Crack: The lovely Georgian Theatre S...</td>
-<td>boro</td>
+<td>29-04-2020 18:31</td>
+<td>Help and in their research on covid and make a donation today We consider this a heroic act</td>
+<td>Not Available</td>
+<td>Oirschot - Nijmegen</td>
 </tr>
 <tr>
 <th>25</th>
-<td>29-04-2020 18:42</td>
-<td>b'RT @Caf: Guide your charity through the epid...</td>
-<td>Unknown</td>
+<td>29-04-2020 19:02</td>
+<td>The lovely Georgian Theatre Stockton georgian stcktn are running a crowd funding campaign with some great rewards on</td>
+<td>Not Available</td>
+<td>boro</td>
 </tr>
 <tr>
 <th>26</th>
-<td>29-04-2020 19:02</td>
-<td>b"Is tonight a good night to host an iRacing r...</td>
-<td>Redwood City, CA</td>
-</tr>
-<tr>
-<th>27</th>
-<td>29-04-2020 20:26</td>
-<td>b'RT @iam4byo: We\xe2\x80\x99d like to express...</td>
+<td>29-04-2020 18:42</td>
+<td>Guide your charity through the epidemic with help from Online donation resources and the latest grants available now</td>
+<td><a href="https">https</a></td>
 <td>Unknown</td>
 </tr>
 <tr>
+<th>27</th>
+<td>29-04-2020 19:02</td>
+<td>Is tonight a good night to host an iRacing race to decide where to send a COVID relief donation I don t want</td>
+<td><a href="https://t.co/nLXv7il7RK">https://t.co/nLXv7il7RK</a></td>
+<td>Redwood City, CA</td>
+</tr>
+<tr>
 <th>28</th>
-<td>29-04-2020 18:43</td>
-<td>b'RT @KreuterMD: \xe2\xad\x90\xef\xb8\x8f Plea...</td>
+<td>29-04-2020 20:26</td>
+<td>like to express our gratitude to SHEPCO for their donation of k In this picture receiving this donation from the</td>
+<td>Not Available</td>
 <td>Unknown</td>
 </tr>
 <tr>
 <th>29</th>
-<td>29-04-2020 20:54</td>
-<td>b'RT @YetideBadaki: @ValerieComplex @yetide Lo...</td>
-<td>Pasco, WA</td>
+<td>29-04-2020 18:43</td>
+<td>Please go to for information on who is eligible to donate #ConvalescentPlasma, where is your</td>
+<td><a href="https://t.co/bVguR9Wq7f">https://t.co/bVguR9Wq7f</a></td>
+<td>Unknown</td>
 </tr>
 <tr>
 <th>30</th>
-<td>29-04-2020 18:51</td>
-<td>b'Please suppt the work of NPE Action. Your do...</td>
-<td>Unknown</td>
+<td>29-04-2020 20:54</td>
+<td>Looking forward to As promised for any IG lives I do this Live is with a donation to</td>
+<td>Not Available</td>
+<td>Pasco, WA</td>
 </tr>
 </tbody>
 </table>
 </div>
-</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
+<div class="pagination">
+<!-- <a class="left_arrow_pagination" href="#">&laquo;</a> -->
+<a class="active" id="1" onclick="redirectPage(this.id)">1</a><a class="inactive" id="2" onclick="redirectPage(this.id)">2</a><a class="inactive" id="3" onclick="redirectPage(this.id)">3</a><a class="inactive" id="4" onclick="redirectPage(this.id)">4</a><a class="inactive" id="5" onclick="redirectPage(this.id)">5</a><a class="inactive" id="6" onclick="redirectPage(this.id)">6</a><a class="inactive" id="7" onclick="redirectPage(this.id)">7</a><a class="inactive" id="8" onclick="redirectPage(this.id)">8</a><a class="inactive" id="9" onclick="redirectPage(this.id)">9</a><a class="inactive" id="10" onclick="redirectPage(this.id)">10</a><a class="inactive" id="11" onclick="redirectPage(this.id)">11</a><a class="inactive" id="12" onclick="redirectPage(this.id)">12</a><a class="inactive" id="13" onclick="redirectPage(this.id)">13</a><a class="inactive" id="14" onclick="redirectPage(this.id)">14</a><a class="inactive" id="15" onclick="redirectPage(this.id)">15</a>
+<!-- <a href="#">&raquo;</a> -->
+</div>
+</body>
 </html>

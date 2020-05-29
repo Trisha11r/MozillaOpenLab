@@ -1,7 +1,6 @@
 import pandas as pd
 import re
 import nltk
-# nltk.download('punkt')
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from nltk.stem import WordNetLemmatizer
@@ -23,7 +22,6 @@ from sklearn.metrics import accuracy_score
 
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import CountVectorizer, TfidfTransformer
-
 
 
 stop_words = ["a", "about", "above", "after", "again", "against", "all", "am", "an", "and", "any", "are",
@@ -85,17 +83,24 @@ stop_words = ["a", "about", "above", "after", "again", "against", "all", "am", "
 					 'within', 'without', 'work', 'worked', 'working', 'works', 'would', 'x', 'y', 'year', 'years',
 					 'yet', 'you', 'young', 'younger', 'youngest', 'your', 'yours', 'z', 'weren', 'didn', 'ours', 'hasn', 'hadn', "should've", 'ourselves', 're', 'wouldn', 've', 'ain', 'couldn', 'mustn', 'aren', 'isn', 'wasn', 'doesn', 'll', "that'll", 'mightn', 'won', 'shan', "mightn't", "needn't", 'haven', 'needn', 'ma', 'don', 'shouldn']
 
-def clean(data):
+def clean(data, flag):
 	# stop_words = set(stopwords.words('english'))
 	ps = PorterStemmer()
 	lem = WordNetLemmatizer()
 
 	data = data.replace(np.nan, 'Unknown', regex=True)
 
+	# if flag==1:
+	# 	data['Tweet_cleaned'] = ""
+	# print (data)
+
 	for index, row in data.iterrows():
 		s = ''
 		row_tweet = row['Actual_Tweet'].replace('\\n', ' ')
 		tweet = row_tweet.split(' ')
+
+		urlFound = False
+
 		for i, c in enumerate(tweet):
 			if( c.startswith('b') and c.endswith('RT') ):
 				# s += '_RT_ '
@@ -105,20 +110,40 @@ def clean(data):
 				continue
 			elif ( 'http' in c ):
 				# s += '_URL_ '
+				urlFound = True
+				
+				t = ""
+				for x in c:
+					if ( (x>='a' and x<='z') or (x>='A' and x<='Z') or (x>='0' and x<='9') or x==':' or x=='/' or x=="."):
+						t += x
+					elif x=='\\':
+						break
+
+				data.at[index, 'URL'] = t
 				continue
 			elif ( re.search("^.*x[a-z][0-9].*$" , c) ):
 				# s += ''
 				continue
 			elif ( c.startswith('#') or c.startswith('@')):
-				continue
+				if flag==1 and c.startswith('#'):
+					s += c + ' '
+				else:
+					continue
+
 			else:
 				if( i==0 and (c.startswith('b\'') or c.startswith('b\"') ) ):
 					c = c[2:]
 
-				c = c.lower()
-				# Removing Stop Words using nltk
-				if c in stop_words:
-					continue
+				if flag==0:
+					c = c.lower()
+
+					# Removing Stop Words using nltk
+					if c in stop_words:
+						continue
+				
+				# # Removing Stop Words using nltk
+				# if flag==0 and c in stop_words:
+				# 	continue
 
 				t = ''
 				ind = -1
@@ -127,7 +152,7 @@ def clean(data):
 				for x in c:
 					
 					ind += 1
-					if x=='#':
+					if flag==0 and x=='#':
 						break
 
 					if ( (x>='a' and x<='z') or (x>='A' and x<='Z') ):
@@ -137,30 +162,43 @@ def clean(data):
 						t += ' '
 						count = -1
 
-				t = lem.lemmatize(t, pos='v')
-				if t in stop_words:
-					continue
+				if flag==0:
+					t = lem.lemmatize(t, pos='v')
+					if t in stop_words:
+						continue
+
 				s += t + ' '
 
 		
 		if s=='':
 			print (index)
 
-		# Removing one, two letter words
-		s = re.sub(r'\b\w{1,2}\b', '', s)
+		if flag==0:
+			# Removing one, two letter words
+			s = re.sub(r'\b\w{1,2}\b', '', s)
 
 		# Remove extra whitespaces in between
 		s = " ".join(s.split())
-
-
-		row['Tweet'] = s
+		
+		if flag==0:
+			row['Tweet'] = s
+		else:
+			data.at[index, 'Tweet_cleaned'] = s
+			if urlFound==False:
+				data.at[index, 'URL'] = 'Not Available'
 	
-	data = data.drop_duplicates(subset=['Tweet'], keep='first')
-	data['Tweet'].replace('', np.nan, inplace=True)
-	data.dropna(subset=['Tweet'], inplace=True)
+	if flag==0:	
+		data = data.drop_duplicates(subset=['Tweet'], keep='first')
+		data['Tweet'].replace('', np.nan, inplace=True)
+		data.dropna(subset=['Tweet'], inplace=True)
+	# else:
+	# 	print (data['Tweet_cleaned'])
+	# 	data = data.drop_duplicates(subset=['Tweet_cleaned'], keep='first')
+	# 	data['Tweet_cleaned'].replace('', np.nan, inplace=True)
+	# 	data.dropna(subset=['Tweet_cleaned'], inplace=True)
 	
 	print ('Data cleaned')
-
+	# print (data)
 
 	return data
 
@@ -192,14 +230,6 @@ def labelling(data):
 	# data.to_csv('TwitterDataLabelled.csv', index=False)	
 	return donation, unknown, data
 
-def split(data):
-	data = np.array_split(data, 4)
-
-	data[0].to_csv('division/Kartik.csv', index=False)
-	data[1].to_csv('division/Trisha.csv', index=False)
-	data[2].to_csv('division/Nitin.csv', index=False)
-	data[3].to_csv('division/Shanuj.csv', index=False)
-
 def label_encoder(data):
 
 	data = data.reset_index(drop=True)
@@ -217,37 +247,8 @@ def label_encoder(data):
 
 	data.to_csv('dataset_final_3k.csv', index=False)
 
-def loadModel():
 
-	classes = ['Labels', 'Donation_Related', 'Resource_Type']
-	
-	for cls in classes:
-		
-		if cls=='Labels':
-			print ('Loading Model for Donation/Non-Donation...')
-		  
-			data = pd.read_csv('training_data.csv')
-			# load the saved pipleine model
-			loaded_models['d_nd'] = load("models/donation_nonDonation.joblib")
-
-		elif cls=='Donation_Related':
-			print ('Loading Model for Only Donation Data- Request/Offer...')
-		  
-			data = pd.read_csv('training_data_donation.csv')
-			loaded_models['req_off'] = load("models/request_offer.joblib")
-		else:
-			print ('Loading Model for Only Donation Data- Resource Type...')
-		  
-			data = pd.read_csv('training_data_donation.csv')
-			loaded_models['res_type'] = load("models/resource_type.joblib")
-		
-		sentence = ['Want to donate.']
-		print (loaded_models['d_nd'].predict(sentence))
-		# break
-
-	return "test"
-
-data = pd.read_csv('final_dataset.csv')
+data = pd.read_csv('final_dataset_result.csv')
 
 loaded_models = {}
 classes = ['Labels', 'Donation_Related', 'Resource_Type']
@@ -268,7 +269,12 @@ for cls in classes:
 
 		loaded_models['res_type'] = load("models/resource_type.joblib")
 
+
+result_csv = pd.DataFrame()
+last_pg = -1
+
 def requestResults(name):
+	global result_csv
 	label = loaded_models['d_nd'].predict([name])[0]
 
 	if label==1:
@@ -276,8 +282,9 @@ def requestResults(name):
 		res_type = loaded_models['res_type'].predict([name])[0]
 		result_csv = data[(data['Labels']==label) & (data['Donation_Related']==req_off) & (data['Resource_Type']==res_type)]
 
-		result_csv = result_csv[['Time', 'Actual_Tweet', 'Location']]
+		result_csv = result_csv[['Time', 'Tweet_cleaned', 'URL', 'Location']]
 		result_csv.reset_index(drop=True, inplace=True)
+		result_csv.index += 1
 	else:
 		result_csv = pd.DataFrame()
 	
@@ -287,20 +294,15 @@ app = Flask(__name__)
 
 @app.route("/")
 def main():
-	print ()
-	print ()
-	print ('in main')
 	return render_template('index.html')
 
 
-@app.route('/', methods=['POST', 'GET'])
+@app.route('/searched', methods=['POST', 'GET'])
 def get_data():
-	print ()
-	print ()
-	print ("in get_data")
 	if request.method == 'POST':
 		user = request.form['search']
-		result_csv = requestResults(user)
+		# result_csv = requestResults(user)
+		requestResults(user)
 		
 		f = open('templates/trying.html').read()
 		soup = Soup(f, features="html.parser")
@@ -309,14 +311,51 @@ def get_data():
 		if result_csv.empty:
 			p.append("You searched for: " + user + ". This is a Non-Donation request.")
 		else:
-			result_csv = result_csv[:31]
+			show_results = result_csv[:30]
 			p.append("You searched for: " + user + ". Found " + str(len(result_csv)) + " results.")
-			result = Soup(result_csv.to_html(), features="html.parser")
+			result = Soup(show_results.to_html(), features="html.parser")
+
+			# Make URLs as hyperlinks
+			count = 0
+			insert = 3
+			for td in result.find_all("td"):
+				count += 1
+
+				if (count==insert):
+
+					if (td.text!="Not Available"):
+
+						a = soup.new_tag("a")
+						a["href"] = td.text
+						a.string = td.text
+
+						td.string = ""
+						td.append(a)
+
+					insert += 4
 
 			table = result.find("table")
-			table['style'] = 'position:absolute;top:180px;padding:35px;'
+			table['border'] = '0'
+			table['style'] = 'position:absolute;top:180px;padding-left:35px;padding-right:35px;'
 
 			p.insert_after(result)
+
+			a = soup.find("a", {"id" : 1})
+
+			n = len(result_csv)//30
+
+			if (n%30 != 0):
+				n += 1
+				last_pg = n
+
+			for i in range(n-1):
+				pages = soup.new_tag("a")
+				pages['class'] = 'inactive'
+				pages['id'] = i+2
+				pages['onclick'] = "redirectPage(this.id)"
+				pages.string = str(i+2)
+				a.insert_after(pages)
+				a = pages
 			
 
 		file = open('templates/searched.html', "w", encoding="utf-8")
@@ -325,7 +364,81 @@ def get_data():
 
 		return render_template('searched.html')
 
+@app.route('/page')
+def pagination():
+	global result_csv
+	global last_pg
+
+	# Get the current page as the argument in URL
+	pg = request.args.get('page', default = "1", type = str)
+
+	# Parse the searched.html file for updating the new table
+	f = open('templates/searched.html', encoding='utf-8').read()
+	soup = Soup(f, features="html.parser")
+
+	# Remove the table tag for previpus page results from the html file.
+	for s in soup.select('table'):
+		s.extract()
+	
+	# Make the previous page class as inactive
+	a = soup.find("a", {"class" : "active"})
+	a["class"] = "inactive" 
+	
+	# Make the current page (pg) class as active
+	a = soup.find("a", {"id" : pg})
+	a['class'] = "active"
+	
+	p = soup.find("p", {"class" : "searched_for"})
+
+	pg = int(pg)
+
+	if(pg==last_pg):
+		# Get remaining results from result_csv
+		show_results = result_csv.loc[(pg-1)*30 + 1:]
+	else:
+		# Get only 30 results from result_csv depending upon the page number
+		show_results = result_csv.loc[(pg-1)*30 + 1: pg * 30]
+	
+
+	
+	result = Soup(show_results.to_html(), features="html.parser")
+
+	# Make URLs as hyperlinks
+	count = 0
+	insert = 3
+	for td in result.find_all("td"):
+		count += 1
+
+		if (count==insert):
+
+			if (td.text!="Not Available"):
+
+				a = soup.new_tag("a")
+				a["href"] = td.text
+				a.string = td.text
+
+				td.string = ""
+				td.append(a)
+
+			insert += 4
+
+	table = result.find("table")
+	table['border'] = '0'
+	table['style'] = 'position:absolute;top:180px;padding-left:35px;padding-right:35px;'
+
+	p.insert_after(result)
+
+	file = open('templates/searched.html', "w", encoding="utf-8")
+	file.write(str(soup))
+	file.close()
+
+	return render_template('searched.html')	
+
 
 if __name__ == '__main__':
 	
 	app.run(debug=True, use_reloader=True)
+	
+	# data = pd.read_csv('final_dataset_result.csv')
+	# data = clean(data, 1)
+	# data.to_csv('final_dataset_result.csv', index=False)
