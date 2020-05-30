@@ -271,10 +271,13 @@ for cls in classes:
 
 
 result_csv = pd.DataFrame()
+location_results = pd.DataFrame()
 last_pg = -1
+location = ""
 
 def requestResults(name):
 	global result_csv
+
 	label = loaded_models['d_nd'].predict([name])[0]
 
 	if label==1:
@@ -288,7 +291,7 @@ def requestResults(name):
 	else:
 		result_csv = pd.DataFrame()
 	
-	return result_csv
+	# return result_csv
 
 app = Flask(__name__)
 
@@ -299,21 +302,59 @@ def main():
 
 @app.route('/searched', methods=['POST', 'GET'])
 def get_data():
+	global location
+	global result_csv
+	global location_results
+
 	if request.method == 'POST':
 		user = request.form['search']
-		# result_csv = requestResults(user)
+		location = request.form['location']
+
 		requestResults(user)
 		
 		f = open('templates/trying.html').read()
 		soup = Soup(f, features="html.parser")
 		p = soup.find("p", {"class" : "searched_for"})
+		paginate = soup.find("div", {"class" : "pagination"})
 
 		if result_csv.empty:
 			p.append("You searched for: " + user + ". This is a Non-Donation request.")
 		else:
-			show_results = result_csv[:30]
-			p.append("You searched for: " + user + ". Found " + str(len(result_csv)) + " results.")
+			
+			# Check for tweets at the location given. If location not given, then show results for the world (only 30 tweets per page).
+			if location != "":
+				show_results = result_csv[result_csv['Location'].str.contains(location.upper()) | result_csv['Location'].str.contains(location.lower())]
+
+				location_results = show_results
+
+				# If no tweets are present at searched location
+				if len(show_results)==0:
+					
+					show_results = result_csv[:30]
+					p.append("You searched for: " + user + " at " + location + ". Found 0 results. Displaying " + str(len(result_csv)) + " results for other locations.")
+					
+
+					location = ""
+				else:
+					result_csv = result_csv[~result_csv['Location'].str.contains(location.upper()) & ~result_csv['Location'].str.contains(location.lower())]
+					
+					# Showing only top 15 tweets of searched location
+					if len(show_results) > 15:
+						show_results = show_results[:15]
+
+					p.append("You searched for: " + user + " at " + location + ". Found " + str(len(show_results)) + " results.")
+			else:
+				show_results = result_csv[:30]
+				p.append("You searched for: " + user + " at " + location + ". Found " + str(len(result_csv)) + " results.")					
+			
+
+			show_results.reset_index(drop=True, inplace=True)
+			show_results.index += 1
+				
 			result = Soup(show_results.to_html(), features="html.parser")
+
+			result.find("tr")['style'] = 'text-align:center;'
+
 
 			# Make URLs as hyperlinks
 			count = 0
@@ -334,15 +375,31 @@ def get_data():
 
 					insert += 4
 
+				if count == insert-2 :
+					td['style'] = "width:12%;"
+
 			table = result.find("table")
 			table['border'] = '0'
-			table['style'] = 'position:absolute;top:180px;padding-left:35px;padding-right:35px;'
+			table['style'] = 'position:absolute;top:180px;padding-left:35px;padding-right:35px;text-align:center;'
 
 			p.insert_after(result)
 
 			a = soup.find("a", {"id" : 1})
+			
+			if location=="":
+				n = len(result_csv)//30
 
-			n = len(result_csv)//30
+				if n>20:
+					paginate["style"] = "position:absolute;left:50%;top:185%;width:80%;transform: translate(-50%, -50%); background-color: #525252;background-size: cover;"
+				else:
+					paginate["style"] = "position:absolute;left:50%;top:185%;transform: translate(-50%, -50%); background-color: #525252;background-size: cover;"
+			else:
+				n = len(result_csv)//15
+
+				if n>20:
+					paginate["style"] = "position:absolute;left:50%;top:195%;width:80%;transform: translate(-50%, -50%); background-color: #525252;background-size: cover;"
+				else:
+					paginate["style"] = "position:absolute;left:50%;top:195%;transform: translate(-50%, -50%); background-color: #525252;background-size: cover;"
 
 			if (n%30 != 0):
 				n += 1
@@ -356,7 +413,56 @@ def get_data():
 				pages.string = str(i+2)
 				a.insert_after(pages)
 				a = pages
-			
+
+			if location != "":
+				# Other Location Results
+				p = soup.new_tag("p")
+				p['class'] = "other_results_para"
+				p['style'] = "position: absolute;top:750px;font-weight: bold;"
+				p.string = "Other Location Tweets (Found " + str(len(result_csv)) + " results)"
+
+				table = soup.find("table", {"class" : "dataframe"})
+				table.insert_after(p)
+
+				other_results = result_csv[:15]
+				other_results.reset_index(drop=True, inplace=True)
+				other_results.index += 1
+					
+				result = Soup(other_results.to_html(), features="html.parser")
+
+				result.find("tr")['style'] = 'text-align:center;'
+
+
+				# Make URLs as hyperlinks
+				count = 0
+				insert = 3
+				for td in result.find_all("td"):
+					count += 1
+
+					if (count==insert):
+
+						if (td.text!="Not Available"):
+
+							a = soup.new_tag("a")
+							a["href"] = td.text
+							a.string = td.text
+
+							td.string = ""
+							td.append(a)
+
+						insert += 4
+
+					if count == insert-2 :
+						td['style'] = "width:12%;"
+
+				table = result.find("table")
+				table['class'] = 'other_results'
+				table['border'] = '0'
+				table['style'] = 'position:absolute;top:800px;padding-left:35px;padding-right:35px;text-align:center;'
+
+				p = soup.find("p", {"class" : "other_results_para"})
+				p.insert_after(table)
+
 
 		file = open('templates/searched.html', "w", encoding="utf-8")
 		file.write(str(soup))
@@ -367,7 +473,9 @@ def get_data():
 @app.route('/page')
 def pagination():
 	global result_csv
+	global location_results
 	global last_pg
+	global location
 
 	# Get the current page as the argument in URL
 	pg = request.args.get('page', default = "1", type = str)
@@ -376,10 +484,23 @@ def pagination():
 	f = open('templates/searched.html', encoding='utf-8').read()
 	soup = Soup(f, features="html.parser")
 
-	# Remove the table tag for previpus page results from the html file.
-	for s in soup.select('table'):
-		s.extract()
-	
+	p = soup.find("p", {"class" : "searched_for"})
+
+	# If location is empty, then delete previous table results
+	if location=="":
+		# Remove the table tag for previous page results from the html file.
+		for s in soup.select('table'):
+			s.extract()
+
+		tweets_per_pg = 30
+		
+	# Otherwise, delete other results table and display data for next page
+	else:
+		for s in soup.find_all("table", {"class" : "other_results"}):
+			s.decompose()
+
+		tweets_per_pg = 15
+
 	# Make the previous page class as inactive
 	a = soup.find("a", {"class" : "active"})
 	a["class"] = "inactive" 
@@ -388,21 +509,21 @@ def pagination():
 	a = soup.find("a", {"id" : pg})
 	a['class'] = "active"
 	
-	p = soup.find("p", {"class" : "searched_for"})
+	
 
 	pg = int(pg)
 
 	if(pg==last_pg):
 		# Get remaining results from result_csv
-		show_results = result_csv.loc[(pg-1)*30 + 1:]
+		show_results = result_csv.loc[(pg-1)*tweets_per_pg + 1:]
 	else:
 		# Get only 30 results from result_csv depending upon the page number
-		show_results = result_csv.loc[(pg-1)*30 + 1: pg * 30]
+		show_results = result_csv.loc[(pg-1)*tweets_per_pg + 1: pg * tweets_per_pg]
 	
 
 	
 	result = Soup(show_results.to_html(), features="html.parser")
-
+	result.find("tr")['style'] = 'text-align:center;'
 	# Make URLs as hyperlinks
 	count = 0
 	insert = 3
@@ -421,12 +542,23 @@ def pagination():
 				td.append(a)
 
 			insert += 4
+			
+		if count == insert-2 :
+			td['style'] = "width:12%;"
 
 	table = result.find("table")
 	table['border'] = '0'
-	table['style'] = 'position:absolute;top:180px;padding-left:35px;padding-right:35px;'
 
-	p.insert_after(result)
+	if location != "":
+		table["class"] = "other_results"
+		table['style'] = 'position:absolute;top:800px;padding-left:35px;padding-right:35px;text-align:center;'
+		p = soup.find("p", {"class" : "other_results_para"})
+		
+	else:
+		table['style'] = 'position:absolute;top:180px;padding-left:35px;padding-right:35px;text-align:center;'
+
+	p.insert_after(table)
+	
 
 	file = open('templates/searched.html', "w", encoding="utf-8")
 	file.write(str(soup))

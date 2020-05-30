@@ -8,6 +8,7 @@ html {
   /* 2 */
 }
 
+
 /* Sections
    ========================================================================== */
 /**
@@ -18,18 +19,15 @@ body {
   padding: 0;
   font-family: sans-serif;
   text-align: center;
-  /*position: relative;
-  height: 100%;
-  background: url("images/trying.jpg");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;*/
+  /*background-color: #4272d7;*/
+  /*background-color: #63a4ff;*/
+  /*background-image: linear-gradient(315deg, #4272d7 50%, #b65454 20%);*/
+  background-image: radial-gradient(#63a4ff 40%, #b65454);
 }
 ul{
   position: absolute;
-  top: 5%;
   right: 50;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -110%);
   margin: 0;
   padding: 0;
   display: flex;
@@ -69,13 +67,43 @@ ul li a {
   text-underline-offset: 6px;
 }
 
-.pagination {
+.dataframe, .other_results{
+  /*background: url("images/trying.jpg");
+  background-size: cover;
+  background-position: center;
+  padding: 15px;*/
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+
+tr:nth-child(even){background-color: #f2f2f2;}
+tr:nth-child(odd){background-color:#D3D3D3;}
+tr:hover {background-color: #ddd;}
+
+th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #cb6b6b;
+  color: white;
+  text-align: center;
+}
+
+td, th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+/*.pagination {
     position:absolute;
-    right:25%;
-    margin-left:-150px;
+    left: 50%;
+    top: 195%;
+    transform: translate(-50%, -50%);
     background-color: #525252;
     background-size: cover;
-}
+}*/
 
 .pagination a {
   /*color: black;*/
@@ -541,7 +569,7 @@ legend {
 }
 
 .s01 {
-  min-height: 240vh;
+  min-height: 100vh;
   display: -ms-flexbox;
   display: flex;
   -ms-flex-pack: center;
@@ -554,13 +582,6 @@ legend {
   background-size: cover;
   background-position: center;
   padding: 15px;*/
-}
-
-.dataframe{
-  background: url("images/trying.jpg");
-  background-size: cover;
-  background-position: center;
-  padding: 15px;
 }
 
 .s01 form {
