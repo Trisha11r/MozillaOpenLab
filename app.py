@@ -270,14 +270,7 @@ for cls in classes:
 		loaded_models['res_type'] = load("models/resource_type.joblib")
 
 
-result_csv = pd.DataFrame()
-# location_results = pd.DataFrame()
-last_pg = -1
-location = ""
-
 def requestResults(name):
-	global result_csv
-
 	label = loaded_models['d_nd'].predict([name])[0]
 
 	if label==1:
@@ -291,7 +284,7 @@ def requestResults(name):
 	else:
 		result_csv = pd.DataFrame()
 	
-	# return result_csv
+	return result_csv
 
 app = Flask(__name__)
 
@@ -302,15 +295,12 @@ def main():
 
 @app.route('/searched', methods=['POST', 'GET'])
 def get_data():
-	global location
-	global result_csv
-	# global location_results
 
 	if request.method == 'POST':
 		user = request.form['search']
 		location = request.form['location']
 
-		requestResults(user)
+		result_csv = requestResults(user)
 		print ('Searched : ', user)
 		print ('result_csv (in searched): ', result_csv)
 
@@ -347,8 +337,11 @@ def get_data():
 					p.append("You searched for: " + user + " at " + location + ". Found " + str(len(show_results)) + " results.")
 			else:
 				show_results = result_csv[:30]
-				p.append("You searched for: " + user + " at " + location + ". Found " + str(len(result_csv)) + " results.")					
+				p.append("You searched for: " + user + ". Found " + str(len(result_csv)) + " results.")					
 			
+			result_csv['location_searched'] = location
+			result_csv.to_csv('pagewise_results.csv', index=False)
+			result_csv = result_csv.loc[:, result_csv.columns != 'location_searched']
 
 			show_results.reset_index(drop=True, inplace=True)
 			show_results.index += 1
@@ -392,9 +385,9 @@ def get_data():
 				n = len(result_csv)//30
 
 				if n>20:
-					paginate["style"] = "position:absolute;left:50%;top:185%;width:80%;transform: translate(-50%, -50%); background-color: #525252;background-size: cover;"
+					paginate["style"] = "position:absolute;left:50%;top:190%;width:80%;transform: translate(-50%, -50%); background-color: #525252;background-size: cover;"
 				else:
-					paginate["style"] = "position:absolute;left:50%;top:185%;transform: translate(-50%, -50%); background-color: #525252;background-size: cover;"
+					paginate["style"] = "position:absolute;left:50%;top:190%;transform: translate(-50%, -50%); background-color: #525252;background-size: cover;"
 			else:
 				n = len(result_csv)//15
 
@@ -474,11 +467,16 @@ def get_data():
 
 @app.route('/page')
 def pagination():
-	global result_csv
-	# global location_results
-	global last_pg
-	global location
 
+	result_csv = pd.read_csv('pagewise_results.csv')
+	location = result_csv['location_searched'][0]
+
+	result_csv = result_csv.loc[:, result_csv.columns != 'location_searched']
+	
+	if pd.isnull(location):
+		location = ""
+
+	print ('location: ', location)
 	print ('result_csv (in page): ', result_csv)
 	# Get the current page as the argument in URL
 	pg = request.args.get('page', default = "1", type = str)
@@ -487,6 +485,11 @@ def pagination():
 	f = open('templates/searched.html', encoding='utf-8').read()
 	soup = Soup(f, features="html.parser")
 
+	# get the last page
+	pages = soup.find_all("a", {"class" : "inactive"})
+	last_pg = int(pages[len(pages)-1].text)
+
+	print ('last_pg: ', last_pg)
 	p = soup.find("p", {"class" : "searched_for"})
 
 	# If location is empty, then delete previous table results

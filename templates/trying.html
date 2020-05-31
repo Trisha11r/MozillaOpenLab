@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet" />
     <link rel="stylesheet" href="{{ url_for('static', filename='trying.css') }}" />
     <script type="text/javascript"> 
-      function redirectPage(id) { 
+      function redirectPage(id) {
           location.href = "/page?page=" + id;
       } 
     </script>
@@ -15,7 +15,7 @@
   <body>
     <nav role="navigation" aria-label="main menu">
       <ul class="navbar">
-        <li><a href="static/aboutUs.html">About Uss</a></li>
+        <li><a href="static/aboutUs.html">About Us</a></li>
         <li><a href="static/Contact.html">Contact</a></li>
       </ul>
     </nav>
@@ -23,10 +23,10 @@
       <form action="/searched" method="post">
         <div class="inner-form" style="position: absolute;left:150px; top:60px;">
           <div class="input-field first-wrap">
-            <input  name="search" placeholder="What are you looking for?" type="text"/>
+            <input id="search" name="search" placeholder="What are you looking for?" type="text"/>
           </div>
           <div class="input-field second-wrap">
-            <input  name="location" placeholder="Location" type="text"/>
+            <input id="location" name="location" placeholder="Location" type="text"/>
           </div>
           <div class="input-field third-wrap">
             <button class="btn-search" type="submit">Search</button>
