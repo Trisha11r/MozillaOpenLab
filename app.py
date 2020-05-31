@@ -479,8 +479,6 @@ def pagination():
 	global last_pg
 	global location
 
-	print ('result_csv (in page): ', result_csv)
-
 	# Get the current page as the argument in URL
 	pg = request.args.get('page', default = "1", type = str)
 
@@ -512,8 +510,6 @@ def pagination():
 	# Make the current page (pg) class as active
 	a = soup.find("a", {"id" : pg})
 	a['class'] = "active"
-	
-	
 
 	pg = int(pg)
 
@@ -524,8 +520,10 @@ def pagination():
 		# Get only 30 results from result_csv depending upon the page number
 		show_results = result_csv.loc[(pg-1)*tweets_per_pg + 1: pg * tweets_per_pg]
 	
+	print ('result_csv (in page): ', result_csv)
+	print ('page: ', pg)
+	print ('show_results (in page): ', show_results)
 
-	
 	result = Soup(show_results.to_html(), features="html.parser")
 	result.find("tr")['style'] = 'text-align:center;'
 	# Make URLs as hyperlinks
