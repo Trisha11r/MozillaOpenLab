@@ -271,7 +271,7 @@ for cls in classes:
 
 
 result_csv = pd.DataFrame()
-location_results = pd.DataFrame()
+# location_results = pd.DataFrame()
 last_pg = -1
 location = ""
 
@@ -291,7 +291,7 @@ def requestResults(name):
 	else:
 		result_csv = pd.DataFrame()
 	
-	return result_csv
+	# return result_csv
 
 app = Flask(__name__)
 
@@ -304,7 +304,7 @@ def main():
 def get_data():
 	global location
 	global result_csv
-	global location_results
+	# global location_results
 
 	if request.method == 'POST':
 		user = request.form['search']
@@ -475,10 +475,11 @@ def get_data():
 @app.route('/page')
 def pagination():
 	global result_csv
-	global location_results
+	# global location_results
 	global last_pg
 	global location
 
+	print ('result_csv (in page): ', result_csv)
 	# Get the current page as the argument in URL
 	pg = request.args.get('page', default = "1", type = str)
 
@@ -520,7 +521,6 @@ def pagination():
 		# Get only 30 results from result_csv depending upon the page number
 		show_results = result_csv.loc[(pg-1)*tweets_per_pg + 1: pg * tweets_per_pg]
 	
-	print ('result_csv (in page): ', result_csv)
 	print ('page: ', pg)
 	print ('show_results (in page): ', show_results)
 
