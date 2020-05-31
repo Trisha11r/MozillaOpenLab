@@ -291,7 +291,7 @@ def requestResults(name):
 	else:
 		result_csv = pd.DataFrame()
 	
-	# return result_csv
+	return result_csv
 
 app = Flask(__name__)
 
@@ -310,8 +310,10 @@ def get_data():
 		user = request.form['search']
 		location = request.form['location']
 
-		requestResults(user)
-		
+		result_csv = requestResults(user)
+		print ('Searched : ', user)
+		print ('result_csv (in searched): ', result_csv)
+
 		f = open('templates/trying.html').read()
 		soup = Soup(f, features="html.parser")
 		p = soup.find("p", {"class" : "searched_for"})
@@ -476,6 +478,8 @@ def pagination():
 	global location_results
 	global last_pg
 	global location
+
+	print ('result_csv (in page): ', result_csv)
 
 	# Get the current page as the argument in URL
 	pg = request.args.get('page', default = "1", type = str)
