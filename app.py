@@ -247,7 +247,7 @@ def label_encoder(data):
 
 	data.to_csv('dataset_final_3k.csv', index=False)
 
-
+pd.set_option('display.max_colwidth', -1)
 data = pd.read_csv('final_dataset.csv')
 
 loaded_models = {}
