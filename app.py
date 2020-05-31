@@ -310,7 +310,7 @@ def get_data():
 		user = request.form['search']
 		location = request.form['location']
 
-		result_csv = requestResults(user)
+		requestResults(user)
 		print ('Searched : ', user)
 		print ('result_csv (in searched): ', result_csv)
 
