@@ -286,14 +286,14 @@ def requestResults(name):
 	
 	return result_csv
 
-app = Flask(__name__)
+first_app = Flask(__name__)
 
-@app.route("/")
+@first_app.route("/")
 def main():
 	return render_template('index.html')
 
 
-@app.route('/searched', methods=['POST', 'GET'])
+@first_app.route('/searched', methods=['POST', 'GET'])
 def get_data():
 
 	if request.method == 'POST':
@@ -465,7 +465,7 @@ def get_data():
 
 		return render_template('searched.html')
 
-@app.route('/page')
+@first_app.route('/page')
 def pagination():
 
 	result_csv = pd.read_csv('pagewise_results.csv')
@@ -574,4 +574,4 @@ def pagination():
 
 if __name__ == '__main__':
 	
-	app.run(debug=True, use_reloader=True)
+	first_app.run(debug=True, use_reloader=True)
