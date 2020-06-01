@@ -269,7 +269,6 @@ for cls in classes:
 
 		loaded_models['res_type'] = load("models/resource_type.joblib")
 
-
 def requestResults(name):
 	label = loaded_models['d_nd'].predict([name])[0]
 
@@ -292,6 +291,13 @@ first_app = Flask(__name__)
 def main():
 	return render_template('index.html')
 
+@first_app.route("/about")
+def about():
+	return render_template('aboutUS.html')
+
+@first_app.route("/contact")
+def contact():
+	return render_template('Contact.html')
 
 @first_app.route('/searched', methods=['POST', 'GET'])
 def get_data():
