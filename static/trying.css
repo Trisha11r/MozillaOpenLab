@@ -24,7 +24,7 @@ body {
   /*background-image: linear-gradient(315deg, #4272d7 50%, #b65454 20%);*/
   background-image: radial-gradient(#63a4ff 40%, #b65454);
 }
-ul{
+/*ul{
   position: absolute;
   right: 50;
   transform: translate(-50%, -110%);
@@ -65,6 +65,36 @@ ul li a {
   text-decoration-color: orange;
   text-decoration-thickness: 3px;
   text-underline-offset: 6px;
+}*/
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background-color: #333;
+}
+
+li {
+  float: left;
+  border-right:1px solid #bbb;
+  border-left:1px solid #bbb;
+}
+
+/*li:last-child {
+  border-right: none;
+}*/
+
+li a {
+  display: block;
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+}
+
+li a:hover:not(.active) {
+  background-color: #111;
 }
 
 .dataframe, .other_results{
