@@ -293,11 +293,11 @@ def main():
 
 @first_app.route("/about")
 def about():
-	return render_template('aboutUS.html')
+	return render_template('about.html')
 
 @first_app.route("/contact")
 def contact():
-	return render_template('Contact.html')
+	return render_template('contact.html')
 
 @first_app.route('/searched', methods=['POST', 'GET'])
 def get_data():
