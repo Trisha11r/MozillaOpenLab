@@ -25,7 +25,8 @@ ul {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #333;
+  /*background-color: #333;*/
+  background-color: rgba(231, 76, 60, 0.9);
 }
 
 li {
@@ -498,7 +499,7 @@ legend {
   -ms-flex-align: center;
       align-items: center;
   font-family: 'Poppins', sans-serif;
-  background: url("images/image1.jpg");
+  background: url("images/image1.png");
   background-size: cover;
   background-position: center center;
   padding: 15px;
@@ -512,7 +513,8 @@ legend {
 .s01 form legend {
   font-size: 72px;
   line-height: 1;
-  color: #fff;
+  /*color: #fff;*/
+  color: #C7EA46;
   margin-bottom: 60px;
 }
 
