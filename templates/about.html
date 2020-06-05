@@ -25,12 +25,15 @@
 .float-right{
   float: right;
 }
+.float-left{
+  float: left;
+}
 ul {
   list-style-type: none;
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #333;
+  background-color: rgba(231, 76, 60, 0.9);
 }
 
 li {
@@ -54,7 +57,9 @@ li a {
 li a:hover:not(.active) {
   background-color: #111;
 }
-
+body{
+  background-color: rgb(235, 220, 230);
+}
 </style>
 <ul>
   <li><a href="/">Home</a></li>
@@ -64,40 +69,40 @@ li a:hover:not(.active) {
 <body>
 
   <div class="jumbotron text-center jumbotron-image" style="background-image: url(static/images/Helping-Hand.jpg);">
-    <h1><b>Help for Everyone</b></h1>
+    <h1 style= "font-family: Copperplate"><b>Help for Everyone</b></h1>
     <p style="font-family: Brush Script MT ; font-size:38px"><i>Be the change</i></p>
   </div>
 
 
   <div class="container-fluid">
     <div class = "float-right">
-      <img src="static/images/1840032.jpg" align = "right" style="margin-left:50px" />
+      <img src="static/images/1840032.jpg" align = "right" style="margin-left:50px; border-radius: 15px" />
       </div>
     <h2 style="font-weight:bold; font-size:40px">About Us</h2>
     
       
-      <p style = "text-align: justify; font-size:20px">
+      <p style = "text-align: justify; font-size:17px">
       There is an ocean of information on the internet that can be put to use for the welfare of people. Especially when it comes to any global crisis, the Internet and social media stand out as a powerful tool which if utilized properly, works wonders. There’s a pool of resources and donations which do not always make way to the people who actually need them.
       </p>
-      <p style = "text-align: justify; font-size:20px"> 
+      <p style = "text-align: justify; font-size:17px"> 
        Help for All aims to match the donors to the appropriate requesters and vice versa, keeping the resource factor in mind so that people are able to access the donations they actually need and the donor resources are properly mapped. Help For all utilizes the power of online communities in facilitating the overall donation process and provides a solution to make the process more efficient by mapping requesters to donors and vice versa. We gather information from Twitter about tweets made on offers and requests pertaining to tangible donations of essential goods and make the information specific to user requirements readily available to the user. You just need to let us know whether you want to donate or request and mention the resource you want to make a donation or request for and we help you find your donor/offer match.
     </p>
   
 </div>
 
 <div class="container-fluid">
-  <div class = "float-right">
-      <img src="static/images/img2.jpg" align = "right" style="margin-left:50px" />
+  <div class = "float-left">
+      <img src="static/images/img2.jpg" style="margin-right:50px; border-radius: 15px; height:440px; width:700px" />
       </div>
     <h2 style="font-weight:bold; font-size:40px">What We Offer</h2>
     <h3><strong>For Donors</strong></h3> 
       
-      <p style = "text-align: justify; font-size:20px">
+      <p style = "text-align: justify; font-size:17px">
       Maximization of your donation impact by matching to the right. Go to our homepage, and let us know your offer in the search bar, for eg., type in “I want to donate clothes ” and we would return the tweets pertaining to the request of clothes, with the tweet location, date & time and the tweet link for you to access.
       </p>
       
       <h3><strong>For Donation Seekers</strong></h3>
-      <p style = "text-align: justify; font-size:20px"> 
+      <p style = "text-align: justify; font-size:17px"> 
        Find the right place that would help you in your crisis, request for what you need at the right place. Go to our homepage, and let us know what you want to request for, for eg., type in “I want to request groceries ” and we would return the tweets pertaining to the donations of groceries, with the tweet location, date & time for you to choose the appropriate tweet and also the tweet link for you to access.
 
     </p>
@@ -106,22 +111,15 @@ li a:hover:not(.active) {
 
 <div class="container-fluid">
   <div class = "float-right">
-      <img src="static/images/img2.jpg" align = "right" style="margin-left:50px" />
+      <img src="static/images/img3.jpg" align = "right" style="margin-left:50px; width: 300px; border-radius: 15px" />
       </div>
     <h2 style="font-weight:bold; font-size:40px">How it works</h2>
-    <h3><strong>For Donors</strong></h3> 
+    
       
-      <p style = "text-align: justify; font-size:20px">
-      Maximization of your donation impact by matching to the right. Go to our homepage, and let us know your offer in the search bar, for eg., type in “I want to donate clothes ” and we would return the tweets pertaining to the request of clothes, with the tweet location, date & time and the tweet link for you to access.
+      <p style = "text-align: justify; font-size:17px">
+      Twitter is a great place to communicate with and learn about the recent events of interest. We gather useful tweets from the Twitter API and classify them as donation/non donation types, and further perform matching for the request/offer and the donation resource types, for the ease of tracking tweets pertaining to a particular requirement. This is facilitated through the predictions made by our machine learning models and the advanced NLP techniques employed.
       </p>
-      
-      <h3><strong>For Donation Seekers</strong></h3>
-      <p style = "text-align: justify; font-size:20px"> 
-       Find the right place that would help you in your crisis, request for what you need at the right place. Go to our homepage, and let us know what you want to request for, for eg., type in “I want to request groceries ” and we would return the tweets pertaining to the donations of groceries, with the tweet location, date & time for you to choose the appropriate tweet and also the tweet link for you to access.
-
-    </p>
-  
 </div>
-</body>
+<footer><i><p style="font-size: 14px; padding-left: 10px;padding-right: 10px">The website is not meant for commercial usage and is just a prototype intended for our project idea. All the images used in this website are taken from google images and the authors of this website do not hold the copy right of these images.</p></i></footer>
 </body>
 </html>

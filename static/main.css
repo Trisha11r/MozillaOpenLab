@@ -514,13 +514,13 @@ legend {
   font-size: 72px;
   line-height: 1;
   /*color: #fff;*/
-  color: #C7EA46;
+  color: #ffff00;
   margin-bottom: 60px;
 }
 
 .s01 form .inner-form {
   background: rgba(0, 0, 0, 0.5);
-  padding: 50px 47px;
+  padding: 13px 13px;
   display: -ms-flexbox;
   display: flex;
   width: 100%;
@@ -584,7 +584,7 @@ legend {
 .s01 form .inner-form .input-field.third-wrap .btn-search {
   height: 100%;
   width: 100%;
-  background: #4272d7;
+  background: #e95e4f;
   white-space: nowrap;
   border-radius: .5px;
   font-size: 20px;

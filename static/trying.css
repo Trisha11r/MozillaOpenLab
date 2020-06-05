@@ -19,10 +19,11 @@ body {
   padding: 0;
   font-family: sans-serif;
   text-align: center;
+  background-color: rgb(235, 220, 230);
   /*background-color: #4272d7;*/
   /*background-color: #63a4ff;*/
   /*background-image: linear-gradient(315deg, #4272d7 50%, #b65454 20%);*/
-  background-image: radial-gradient(#63a4ff 40%, #b65454);
+  /*background-image: radial-gradient(#63a4ff 40%, #b65454);*/
 }
 
 ul {
@@ -30,7 +31,7 @@ ul {
   margin: 0;
   padding: 0;
   overflow: hidden;
-  background-color: #333;
+  background-color: rgba(231, 76, 60, 0.9);
 }
 
 li {
@@ -70,7 +71,8 @@ th {
   padding-top: 12px;
   padding-bottom: 12px;
   text-align: left;
-  background-color: #cb6b6b;
+  /*background-color: #cb6b6b;*/
+  background-color: rgba(231, 76, 60, 0.9);
   color: white;
   text-align: center;
 }
