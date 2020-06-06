@@ -9,7 +9,7 @@ from flask import Flask, render_template, jsonify, request, redirect, url_for
 import json
 import pickle
 from joblib import load
-import os
+import os, glob
 
 from bs4 import BeautifulSoup as Soup
 import html2text
@@ -294,16 +294,27 @@ def main():
 
 @first_app.route("/about")
 def about():
+
+	for filename in glob.glob("templates/searched*"):
+		os.remove(filename)
+
 	return render_template('about.html')
 
 @first_app.route("/contact")
 def contact():
+	
+	for filename in glob.glob("templates/searched*"):
+		os.remove(filename)
+
 	return render_template('contact.html')
 
 @first_app.route('/searched', methods=['POST', 'GET'])
 def get_data():
 
 	if request.method == 'POST':
+		for filename in glob.glob("templates/searched*"):
+			os.remove(filename)
+
 		user = request.form['search']
 		location = request.form['location']
 
@@ -311,9 +322,6 @@ def get_data():
 		print ('Searched : ', user)
 		print ('Location : ', location)
 		# print ('result_csv (in searched): ', result_csv)
-
-		if os.path.exists('templates/searched.html'):
-			os.remove('templates/searched.html')
 
 		f = open('templates/trying.html').read()
 		soup = Soup(f, features="html.parser")
@@ -351,8 +359,10 @@ def get_data():
 				p.append("You searched for: " + user + ". Found " + str(len(result_csv)) + " results.")					
 			
 			result_csv['location_searched'] = location
+			result_csv['searched'] = user
 			result_csv.to_csv('pagewise_results.csv', index=False)
-			result_csv = result_csv.loc[:, result_csv.columns != 'location_searched']
+			# result_csv = result_csv.loc[:, result_csv.columns != 'location_searched']
+			result_csv = result_csv.drop(['location_searched', 'searched'], axis=1)
 
 			show_results.reset_index(drop=True, inplace=True)
 			show_results.index += 1
@@ -469,22 +479,21 @@ def get_data():
 				p = soup.find("p", {"class" : "other_results_para"})
 				p.insert_after(table)
 
-
-		# file = open('templates/searched_'+ user + '_' + location + '.html', "w", encoding="utf-8")
-		file = open('templates/searched.html', "w", encoding="utf-8")
+		file = open('templates/searched_'+ user + '_' + location + '.html', "w", encoding="utf-8")
 		file.write(str(soup))
 		file.close()
 
-		# return render_template('searched_'+ user + '_' + location + '.html')
-		return render_template('searched.html')
+		return render_template('searched_'+ user + '_' + location + '.html')
 
 @first_app.route('/page')
 def pagination():
 
 	result_csv = pd.read_csv('pagewise_results.csv')
 	location = result_csv['location_searched'][0]
+	user = result_csv['searched'][0]
 
-	result_csv = result_csv.loc[:, result_csv.columns != 'location_searched']
+	# result_csv = result_csv.loc[:, result_csv.columns != ['location_searched', 'searched']]
+	result_csv = result_csv.drop(['location_searched', 'searched'], axis=1)
 	
 	if pd.isnull(location):
 		location = ""
@@ -495,7 +504,7 @@ def pagination():
 	pg = request.args.get('page', default = "1", type = str)
 
 	# Parse the searched.html file for updating the new table
-	f = open('templates/searched.html', encoding='utf-8').read()
+	f = open('templates/searched_'+ user + '_' + location + '.html', encoding='utf-8').read()
 	soup = Soup(f, features="html.parser")
 
 	# get the last page
@@ -537,9 +546,6 @@ def pagination():
 		# Get only 30 results from result_csv depending upon the page number
 		show_results = result_csv.loc[(pg-1)*tweets_per_pg + 1: pg * tweets_per_pg]
 	
-	print ('page: ', pg)
-	print ('show_results (in page): ', show_results)
-
 	result = Soup(show_results.to_html(), features="html.parser")
 	result.find("tr")['style'] = 'text-align:center;'
 	# Make URLs as hyperlinks
@@ -578,11 +584,11 @@ def pagination():
 	p.insert_after(table)
 	
 
-	file = open('templates/searched.html', "w", encoding="utf-8")
+	file = open('templates/searched_pg' + str(pg) + '.html', "w", encoding="utf-8")
 	file.write(str(soup))
 	file.close()
 
-	return render_template('searched.html')	
+	return render_template('searched_pg' + str(pg) + '.html')
 
 
 if __name__ == '__main__':
