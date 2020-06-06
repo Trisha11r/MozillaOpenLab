@@ -466,15 +466,11 @@ def get_data():
 				p.insert_after(table)
 
 
-		file = open('templates/searched.html', "w", encoding="utf-8")
+		file = open('templates/searched_'+ user + '_' + location + '.html', "w", encoding="utf-8")
 		file.write(str(soup))
 		file.close()
 
-		print ('HTML: ')
-		print ()
-		print (str(soup))
-
-		return render_template('searched.html')
+		return render_template('searched_'+ user + '_' + location + '.html')
 
 @first_app.route('/page')
 def pagination():
