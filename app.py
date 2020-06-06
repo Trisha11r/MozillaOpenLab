@@ -302,7 +302,7 @@ def contact():
 @first_app.route('/searched', methods=['POST', 'GET'])
 def get_data():
 
-	if request.method == 'GET':
+	if request.method == 'POST':
 		user = request.form['search']
 		location = request.form['location']
 
@@ -469,6 +469,10 @@ def get_data():
 		file = open('templates/searched.html', "w", encoding="utf-8")
 		file.write(str(soup))
 		file.close()
+
+		print ('HTML: ')
+		print ()
+		print (str(soup))
 
 		return render_template('searched.html')
 
