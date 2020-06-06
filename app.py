@@ -308,7 +308,8 @@ def get_data():
 
 		result_csv = requestResults(user)
 		print ('Searched : ', user)
-		print ('result_csv (in searched): ', result_csv)
+		print ('Location : ', location)
+		# print ('result_csv (in searched): ', result_csv)
 
 		f = open('templates/trying.html').read()
 		soup = Soup(f, features="html.parser")
