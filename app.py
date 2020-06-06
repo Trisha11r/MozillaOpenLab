@@ -302,7 +302,7 @@ def contact():
 @first_app.route('/searched', methods=['POST', 'GET'])
 def get_data():
 
-	if request.method == 'POST':
+	if request.method == 'GET':
 		user = request.form['search']
 		location = request.form['location']
 
