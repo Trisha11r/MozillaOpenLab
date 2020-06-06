@@ -9,6 +9,7 @@ from flask import Flask, render_template, jsonify, request, redirect, url_for
 import json
 import pickle
 from joblib import load
+import os
 
 from bs4 import BeautifulSoup as Soup
 import html2text
@@ -311,6 +312,9 @@ def get_data():
 		print ('Location : ', location)
 		# print ('result_csv (in searched): ', result_csv)
 
+		if os.path.exists('templates/searched.html'):
+			os.remove('templates/searched.html')
+
 		f = open('templates/trying.html').read()
 		soup = Soup(f, features="html.parser")
 		p = soup.find("p", {"class" : "searched_for"})
@@ -466,11 +470,13 @@ def get_data():
 				p.insert_after(table)
 
 
-		file = open('templates/searched_'+ user + '_' + location + '.html', "w", encoding="utf-8")
+		# file = open('templates/searched_'+ user + '_' + location + '.html', "w", encoding="utf-8")
+		file = open('templates/searched.html', "w", encoding="utf-8")
 		file.write(str(soup))
 		file.close()
 
-		return render_template('searched_'+ user + '_' + location + '.html')
+		# return render_template('searched_'+ user + '_' + location + '.html')
+		return render_template('searched.html')
 
 @first_app.route('/page')
 def pagination():
