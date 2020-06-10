@@ -287,10 +287,10 @@ def get_data():
 		for filename in glob.glob("templates/searched*"):
 			os.remove(filename)
 
-		user = request.form['search']
+		searched_tweet = request.form['search']
 		location = request.form['location']
 
-		result_csv = requestResults(user)
+		result_csv = requestResults(searched_tweet)
 
 		f = open('templates/trying.html').read()
 		soup = Soup(f, features="html.parser")
@@ -298,7 +298,7 @@ def get_data():
 		paginate = soup.find("div", {"class" : "pagination"})
 
 		if result_csv.empty:
-			p.append("You searched for: " + user + ". This is a Non-Donation request.")
+			p.append("You searched for: " + searched_tweet + ". This is a Non-Donation request.")
 		else:
 			
 			# Check for tweets at the location given. If location not given, then show results for the world (only 30 tweets per page).
@@ -311,7 +311,7 @@ def get_data():
 				if len(show_results)==0:
 					
 					show_results = result_csv[:30]
-					p.append("You searched for: " + user + " at " + location + ". Found 0 results. Displaying " + str(len(result_csv)) + " results for other locations.")
+					p.append("You searched for: " + searched_tweet + " at " + location + ". Found 0 results. Displaying " + str(len(result_csv)) + " results for other locations.")
 					
 
 					location = ""
@@ -322,15 +322,30 @@ def get_data():
 					if len(show_results) > 15:
 						show_results = show_results[:13]
 
-					p.append("You searched for: " + user + " at " + location + ". Found " + str(len(show_results)) + " results.")
+					p.append("You searched for: " + searched_tweet + " at " + location + ". Found " + str(len(show_results)) + " results.")
 			else:
 				show_results = result_csv[:30]
-				p.append("You searched for: " + user + ". Found " + str(len(result_csv)) + " results.")					
+				p.append("You searched for: " + searched_tweet + ". Found " + str(len(result_csv)) + " results.")					
 			
-			result_csv['location_searched'] = location
-			result_csv['searched'] = user
+			if location=="":
+				n = len(result_csv)//30
+
+				if (n % 30 !=0):
+					n += 1
+
+			else:
+				n = len(result_csv)//15
+
+				if (n % 15 !=0):
+					n += 1
+
+			parameters = pd.DataFrame({'Location': [location], 'Searched': [searched_tweet], 'Pages' : n})
+
+			# result_csv['location_searched'] = location
+			# result_csv['searched'] = searched_tweet
+			parameters.to_csv('parameters.csv', index=False)
 			result_csv.to_csv('pagewise_results.csv', index=False)
-			result_csv = result_csv.drop(['location_searched', 'searched'], axis=1)
+			# result_csv = result_csv.drop(['location_searched', 'searched'], axis=1)
 
 			show_results.reset_index(drop=True, inplace=True)
 			show_results.index += 1
@@ -371,26 +386,25 @@ def get_data():
 			a = soup.find("a", {"id" : 1})
 			
 			if location=="":
-				n = len(result_csv)//30
+				# n = len(result_csv)//30
 
 				if n>20:
-					paginate["style"] = "position:absolute;left:50%;top:190%;width:80%;transform: translate(-50%, -50%); background-color: #525252;background-size: cover;"
+					paginate["style"] = "position:absolute;left:50%;top:190%;width:71%;transform: translate(-50%, -50%); background-color: #525252;background-size: cover;"
 				else:
 					paginate["style"] = "position:absolute;left:50%;top:190%;transform: translate(-50%, -50%); background-color: #525252;background-size: cover;"
 			else:
-				n = len(result_csv)//15
+				# n = len(result_csv)//15
 
 				if n>20:
-					paginate["style"] = "position:absolute;left:50%;top:195%;width:80%;transform: translate(-50%, -50%); background-color: #525252;background-size: cover;"
+					paginate["style"] = "position:absolute;left:50%;top:195%;width:71%;transform: translate(-50%, -50%); background-color: #525252;background-size: cover;"
 				else:
 					paginate["style"] = "position:absolute;left:50%;top:195%;transform: translate(-50%, -50%); background-color: #525252;background-size: cover;"
 
-			if (n>25):
-				n = 25
+			if (n>20):
+				n = 20
 
-			if (n%30 != 0):
-				n += 1
-				last_pg = n
+			# if (n%30 != 0):
+			# 	n += 1
 
 			for i in range(n-1):
 				pages = soup.new_tag("a")
@@ -450,20 +464,22 @@ def get_data():
 				p = soup.find("p", {"class" : "other_results_para"})
 				p.insert_after(table)
 
-		file = open('templates/searched_'+ user + '_' + location + '.html', "w", encoding="utf-8")
+		file = open('templates/searched_'+ searched_tweet + '_' + location + '.html', "w", encoding="utf-8")
 		file.write(str(soup))
 		file.close()
 
-		return render_template('searched_'+ user + '_' + location + '.html')
+		return render_template('searched_'+ searched_tweet + '_' + location + '.html')
 
 @first_app.route('/page')
 def pagination():
 
 	result_csv = pd.read_csv('pagewise_results.csv')
-	location = result_csv['location_searched'][0]
-	user = result_csv['searched'][0]
 
-	result_csv = result_csv.drop(['location_searched', 'searched'], axis=1)
+	# get the parameters
+	parameters = pd.read_csv('parameters.csv')
+	location = parameters['Location'][0]
+	searched_tweet = parameters['Searched'][0]
+	last_pg = parameters['Pages'][0]
 	
 	if pd.isnull(location):
 		location = ""
@@ -471,16 +487,154 @@ def pagination():
 	# Get the current page as the argument in URL
 	pg = request.args.get('page', default = "1", type = str)
 
+	either_arrows = False
+
 	# Parse the searched.html file for updating the new table
-	f = open('templates/searched_'+ user + '_' + location + '.html', encoding='utf-8').read()
-	soup = Soup(f, features="html.parser")
 
-	# get the last page
-	pages = soup.find_all("a", {"class" : "inactive"})
-	last_pg = int(pages[len(pages)-1].text)
+	if (os.path.exists('templates/searched_pg_left_arrow_pagination.html') and os.path.exists('templates/searched_pg_right_arrow_pagination.html')):
 
-	print ('last_pg: ', last_pg)
+		time_left = os.path.getmtime('templates/searched_pg_left_arrow_pagination.html')
+		time_right = os.path.getmtime('templates/searched_pg_right_arrow_pagination.html')
+
+		either_arrows = True
+
+		if time_left > time_right:
+			print ('Both exists - left')
+			f = open('templates/searched_pg_left_arrow_pagination.html', encoding='utf-8').read()
+			soup = Soup(f, features="html.parser")
+		else:
+			print ('Both exists - right')
+			f = open('templates/searched_pg_right_arrow_pagination.html', encoding='utf-8').read()
+			soup = Soup(f, features="html.parser")
+	
+	elif (os.path.exists('templates/searched_pg_left_arrow_pagination.html')):
+		
+		print ('left exist')
+		either_arrows = True
+
+		f = open('templates/searched_pg_left_arrow_pagination.html', encoding='utf-8').read()
+		soup = Soup(f, features="html.parser")
+
+	elif (os.path.exists('templates/searched_pg_right_arrow_pagination.html')):
+
+		print ('right exist')
+		either_arrows = True
+
+		f = open('templates/searched_pg_right_arrow_pagination.html', encoding='utf-8').read()
+		soup = Soup(f, features="html.parser")
+	else:
+		print ('none exist')
+		f = open('templates/searched_'+ searched_tweet + '_' + location + '.html', encoding='utf-8').read()
+		soup = Soup(f, features="html.parser")
+
+	
+	print ('current_pg: ', pg)
 	p = soup.find("p", {"class" : "searched_for"})
+	
+	arrow_clicked = ""
+
+	if 'left' in pg or 'right' in pg:
+
+		
+
+		if 'right' in pg:
+
+			arrow_clicked = "right_arrow_pagination"
+
+			a = soup.find("a", {"id" : "left_arrow_pagination"})
+
+			current_pg = soup.find("a", {"id" : pg})
+
+			current_pg = current_pg.previous_sibling.previous_sibling
+
+			pg_no = int(current_pg.text)
+
+			for s in soup.find_all("a", {"class" : "inactive"}):
+				s.decompose()
+
+			for s in soup.find_all("a", {"class" : "active"}):
+				s.decompose()
+
+			if ( pg_no != last_pg ):
+
+				for i in range(pg_no+1, pg_no+21):
+					pages = soup.new_tag("a")
+
+					if (i==pg_no+1):
+						pages['class'] = 'active'
+					else:
+						pages['class'] = 'inactive'
+					
+					pages['id'] = i
+					pages['onclick'] = "redirectPage(this.id)"
+					pages.string = str(i)
+					a.insert_after(pages)
+					a = pages
+
+			pg = pg_no+1
+
+		elif 'left' in pg:
+
+			if( either_arrows==False ):
+				return render_template('searched_'+ searched_tweet + '_' + location + '.html')
+
+			arrow_clicked = "left_arrow_pagination"
+
+			a = soup.find("a", {"id" : "left_arrow_pagination"})
+
+			current_pg = soup.find("a", {"id" : pg})
+
+			current_pg = current_pg.next_sibling
+
+			pg_no = int(current_pg.text)
+
+			for s in soup.find_all("a", {"class" : "inactive"}):
+				s.decompose()
+
+			for s in soup.find_all("a", {"class" : "active"}):
+				s.decompose()
+
+			if ( pg_no != 1 ):
+
+				for i in range(pg_no-20, pg_no):
+					pages = soup.new_tag("a")
+					
+					if (i==pg_no-20):
+						pages['class'] = 'active'
+					else:
+						pages['class'] = 'inactive'
+
+					pages['id'] = i
+					pages['onclick'] = "redirectPage(this.id)"
+					pages.string = str(i)
+					a.insert_after(pages)
+					a = pages
+
+				pg = pg_no-20
+
+			else:
+
+				for i in range(1, 21):
+					pages = soup.new_tag("a")
+					
+					if (i==1):
+						pages['class'] = 'active'
+					else:
+						pages['class'] = 'inactive'
+
+					pages['id'] = i
+					pages['onclick'] = "redirectPage(this.id)"
+					pages.string = str(i)
+					a.insert_after(pages)
+					a = pages
+
+				pg = 1
+			
+		# file = open('templates/searched_pg_' + str(pg) + '.html', "w", encoding="utf-8")
+		# file.write(str(soup))
+		# file.close()
+
+		# return render_template('searched_pg_' + str(pg) + '.html')
 
 	# If location is empty, then delete previous table results
 	if location=="":
@@ -497,13 +651,14 @@ def pagination():
 
 		tweets_per_pg = 15
 
-	# Make the previous page class as inactive
-	a = soup.find("a", {"class" : "active"})
-	a["class"] = "inactive" 
-	
-	# Make the current page (pg) class as active
-	a = soup.find("a", {"id" : pg})
-	a['class'] = "active"
+	if arrow_clicked == "":
+		# Make the previous page class as inactive
+		a = soup.find("a", {"class" : "active"})
+		a["class"] = "inactive" 
+		
+		# Make the current page (pg) class as active
+		a = soup.find("a", {"id" : pg})
+		a['class'] = "active"
 
 	pg = int(pg)
 
@@ -552,11 +707,18 @@ def pagination():
 	p.insert_after(table)
 	
 
-	file = open('templates/searched_pg' + str(pg) + '.html', "w", encoding="utf-8")
-	file.write(str(soup))
-	file.close()
+	if (arrow_clicked == ""):
+		file = open('templates/searched_pg_' + str(pg) + '.html', "w", encoding="utf-8")
+		file.write(str(soup))
+		file.close()
 
-	return render_template('searched_pg' + str(pg) + '.html')
+		return render_template('searched_pg_' + str(pg) + '.html')
+	else:
+		file = open('templates/searched_pg_' + arrow_clicked + '.html', "w", encoding="utf-8")
+		file.write(str(soup))
+		file.close()
+
+		return render_template('searched_pg_' + arrow_clicked + '.html')
 
 
 if __name__ == '__main__':
