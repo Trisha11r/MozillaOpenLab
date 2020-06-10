@@ -203,48 +203,20 @@ def clean(data, flag):
 
 	return data
 
-def labelling(data):
-
-	# data = pd.read_csv('TwitterDataCleaned.csv')
-
-	search_words = ['donate', 'donation', 'aid', 'request', 'offer', 'relief', 'handout', 'assistance', 'charity', 'contribution', 'help', 'endowment', 'offering', 'grant', 'contribute', 'support', 'money', 'monetary','assist', 'fund', 'service', 'benefaction']
-
-	indices = []
-
-	for index, row in data.iterrows():
-		print (index, row['Tweet'])
-		for word in search_words:
-			if( re.search("^.*" + word +".*$" , row['Tweet'] )):
-				# print ('word: ', word, ' Tweet: ', row['Tweet'])
-				indices.append(index)
-				break
-	print (len(indices))
-	data['Labels'] = ['ND'] * len(data)
-
-	for index, row in data.iterrows():
-		if index in indices:
-			data['Labels'][index] = 'D'
-
-	unknown = data[data['Labels']=='ND']
-	donation = data[data['Labels']=='D']
-	
-	# data.to_csv('TwitterDataLabelled.csv', index=False)	
-	return donation, unknown, data
-
 def label_encoder(data):
 
 	data = data.reset_index(drop=True)
 	
-	data.loc[data['Labels']==0, ['Donation_Related', 'Resource_Type']] = 'N/A'
+	data.loc[data['D_ND']==0, ['Request_Offer', 'Resource_Type']] = 'N/A'
 	
 	encoder = {'ND':0, 'D':1, 'R':0, 'O':1, 'Money':0, 'Clothing':1, 'Food':2, 'Medical':3, 'Shelter':4, 'Volunteer':5, 'N/A':-1}
 
 	# data['Labels'] = data['Labels'].map({'ND': 0, 'D': 1})
-	data['Donation_Related'] = data['Donation_Related'].map({'R':0, 'O':1, 'N/A':-1})
+	data['Request_Offer'] = data['Request_Offer'].map({'R':0, 'O':1, 'N/A':-1})
 	data['Resource_Type'] = data['Resource_Type'].map({'Money':0, 'Clothing':1, 'Food':2, 'Medical':3, 'Shelter':4, 'Volunteer':5, 'N/A':-1})
 
-	print (len(data[data['Labels']==0]))
-	print (len(data[data['Labels']==1]))
+	print (len(data[data['D_ND']==0]))
+	print (len(data[data['D_ND']==1]))
 
 	data.to_csv('dataset_final_3k.csv', index=False)
 
@@ -252,16 +224,16 @@ pd.set_option('display.max_colwidth', -1)
 data = pd.read_csv('final_dataset.csv')
 
 loaded_models = {}
-classes = ['Labels', 'Donation_Related', 'Resource_Type']
+classes = ['D_ND', 'Request_Offer', 'Resource_Type']
 
 for cls in classes:
 	
-	if cls=='Labels':
+	if cls=='D_ND':
 		print ('Loading Model for Donation/Non-Donation...')
 
 		loaded_models['d_nd'] = load("models/donation_nonDonation.joblib")
 
-	elif cls=='Donation_Related':
+	elif cls=='Request_Offer':
 		print ('Loading Model for Only Donation Data- Request/Offer...')
 
 		loaded_models['req_off'] = load("models/request_offer.joblib")
@@ -276,7 +248,7 @@ def requestResults(name):
 	if label==1:
 		req_off = loaded_models['req_off'].predict([name])[0]
 		res_type = loaded_models['res_type'].predict([name])[0]
-		result_csv = data[(data['Labels']==label) & (data['Donation_Related']==req_off) & (data['Resource_Type']==res_type)]
+		result_csv = data[(data['D_ND']==label) & (data['Request_Offer']==req_off) & (data['Resource_Type']==res_type)]
 
 		result_csv = result_csv[['Time', 'Tweet_cleaned', 'URL', 'Location']]
 		result_csv.reset_index(drop=True, inplace=True)
@@ -319,9 +291,6 @@ def get_data():
 		location = request.form['location']
 
 		result_csv = requestResults(user)
-		print ('Searched : ', user)
-		print ('Location : ', location)
-		# print ('result_csv (in searched): ', result_csv)
 
 		f = open('templates/trying.html').read()
 		soup = Soup(f, features="html.parser")
@@ -351,7 +320,7 @@ def get_data():
 					
 					# Showing only top 15 tweets of searched location
 					if len(show_results) > 15:
-						show_results = show_results[:15]
+						show_results = show_results[:13]
 
 					p.append("You searched for: " + user + " at " + location + ". Found " + str(len(show_results)) + " results.")
 			else:
@@ -361,7 +330,6 @@ def get_data():
 			result_csv['location_searched'] = location
 			result_csv['searched'] = user
 			result_csv.to_csv('pagewise_results.csv', index=False)
-			# result_csv = result_csv.loc[:, result_csv.columns != 'location_searched']
 			result_csv = result_csv.drop(['location_searched', 'searched'], axis=1)
 
 			show_results.reset_index(drop=True, inplace=True)
@@ -416,6 +384,9 @@ def get_data():
 					paginate["style"] = "position:absolute;left:50%;top:195%;width:80%;transform: translate(-50%, -50%); background-color: #525252;background-size: cover;"
 				else:
 					paginate["style"] = "position:absolute;left:50%;top:195%;transform: translate(-50%, -50%); background-color: #525252;background-size: cover;"
+
+			if (n>25):
+				n = 25
 
 			if (n%30 != 0):
 				n += 1
@@ -492,14 +463,11 @@ def pagination():
 	location = result_csv['location_searched'][0]
 	user = result_csv['searched'][0]
 
-	# result_csv = result_csv.loc[:, result_csv.columns != ['location_searched', 'searched']]
 	result_csv = result_csv.drop(['location_searched', 'searched'], axis=1)
 	
 	if pd.isnull(location):
 		location = ""
 
-	print ('location: ', location)
-	print ('result_csv (in page): ', result_csv)
 	# Get the current page as the argument in URL
 	pg = request.args.get('page', default = "1", type = str)
 
