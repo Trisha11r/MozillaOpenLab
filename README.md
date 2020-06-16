@@ -13,9 +13,36 @@ Help for All aims to match the donors to the appropriate requesters and vice ver
   - ***For Donation Seekers***: Find the right place that would help you in your crisis, request for what you need at the right place. Go to our homepage, and let us know what you want to request for, for eg., type in “I want to request groceries ” and we would return the tweets pertaining to the donations of groceries, with the tweet location, date & time for you to choose the appropriate tweet and also the tweet link for you to access.
 
 ## How it works
-Twitter is a great place to communicate with and learn about the recent events of interest. We gather useful tweets from the Twitter API and classify them as donation/non donation types, and further perform matching for the request/offer and the donation resource types, for the ease of tracking tweets pertaining to a particular requirement. This is facilitated through the predictions made by our machine learning models and the advanced NLP techniques employed.
+- Twitter is a great place to communicate with and learn about the recent events of interest. 
+- We gather useful tweets from the Twitter API and classify them as donation/non donation types, and further perform matching for the request/offer and the donation resource types, for the ease of tracking tweets pertaining to a particular requirement. 
+- This is facilitated through the predictions made by our machine learning models and the advanced NLP techniques employed.
+
+### Core idea behind generating and classifying the data (usage of Machine Learning)
+
+### Run the code
+    - git clone [repository]
+    - git push heroku master
+    - heroku logs --tail
+    - Go to url: https://help-for-all.herokuapp.com
+
+## Technological Aspects 
+- ***Languages:*** Python v3, HTML, CSS, Javascript
+- ***Frameworks:*** Twitter API, pandas, nltk, re, numpy, collections, joblib, sklearn (MultinomialNB, TfidfVectorizer, pipeline, train_test_split, accuracy_score), Flask, Bootstrap, BeautifulSoap (bs4)
+- ***Tools:*** Google Colaboratory, Heroku, GitHub
 
 ## Contents
 
-## URL: https://help-for-all.herokuapp.com/about
+    - template folder: HTML files for different web pages of the website
+      (1) index.html
+      (2) about.html
+      (3) contact.html
+      (4) trying.html
+    - static folder: Contains styling and images for web pages
+    - models: Contains the three models for classifying tweet into donation / non-donation, request/offer and resource type.
+      
+
+### URL: 
+https://help-for-all.herokuapp.com
+
+
 
