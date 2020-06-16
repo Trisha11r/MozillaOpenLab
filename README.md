@@ -1,7 +1,8 @@
-# MozillaOpenLab
-Mozilla Open Lab 2020 Help For Everyone
+# Help For All (Mozilla Open Lab 2020)
 
-# About Help For Everyone
+    website created about donor and requestor listings under the Mozilla Spring Builders Open Lab Program, 2020.
+
+# About Help For All
 
 There is an ocean of information on the internet that can be put to use for the welfare of people. Especially when it comes to any global crisis, the Internet and social media stand out as a powerful tool which if utilized properly, works wonders. There’s a pool of resources and donations which do not always make way to the people who actually need them.
 
