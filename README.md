@@ -41,6 +41,11 @@ Help for All aims to match the donors to the appropriate requesters and vice ver
     - static folder: Contains styling and images for web pages
     - models: Contains the three models for classifying tweet into donation / non-donation, request/offer and resource type.
       
+## Model Accuracies
+
+    - Donation/Non-Donation Model: 75%
+    - Request/Offer: 83%
+    - Resource Type: 86%
 
 ### URL: 
 https://help-for-all.herokuapp.com
